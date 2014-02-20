@@ -1,0 +1,9 @@
+■Gitコマンド集
+
+git log [file name]
+  Commit履歴
+git log -p [file name]
+  Commit履歴 + 変更箇所
+git blame [file name]
+  ファイル内を1行ずつ誰が変更したかわかる
+
