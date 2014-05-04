@@ -1,4 +1,4 @@
-MemorandumBook
+memorandom
 ==============
 
-My tips or memorandum book for several things.
+My tips or memorandum for several things.
