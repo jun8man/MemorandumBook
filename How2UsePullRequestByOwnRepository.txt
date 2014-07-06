@@ -1,0 +1,22 @@
+1. Make branch.
+
+2. Modified something on the branch.
+
+3. Add -> Commit -> Push.
+    <note>
+      To reflect your branch on GitHub, use following command.
+      $ git push origin [branch name]
+
+4. Open your repository of Github on browser.
+    <note>
+      confirm above branch and execute pull request.
+      pull request button ca be found.
+
+5. Confirm the pull request on your master.
+    <note>
+      On your environment, confirm the behavior.
+        $ git fetch
+        $ git branch -a
+        $ git checkput -b [branch name] [remote branch name]
+
+6. Push merge button on your browser.

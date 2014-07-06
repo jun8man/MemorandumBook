@@ -1,0 +1,160 @@
+h1. Android Study
+
+h2. デバッグログ
+h3. 基本的なこと
+* Android開発で最もお世話になる機能の1つが、android.util.Logでのログ出力。
+* ログの確認はEclipse上のLogcatビューや、コマンドラインからのLogcatコマンドで見ることができる。
+
+<pre>
+ERROR(エラー時のメッセージ) Log.e(“tag”, “text”);
+WARN(警告メッセージ) Log.w
+INFO(情報) Log.i
+DEBUG(デバッグ) Log.d
+VERBOSE(詳細) Log.v
+</pre>
+
+* デバッグ時はパースペクティブをデバッグに切り替える。
+** デフォルトでは左下にいるので、ウィンドウをDCすると全体化、もう一度DCすれば元に戻る。
+
+h3. ログ出力のフィルタリング
+* Logcatコマンドには、たくさんのシステムログと自分のログを分けて確認するため、フィルタリング機能が用意されている。
+* 場所は、LogcatViewer ウィンドウの +ボタン。
+** ＋ボタンをおして確認したいタグ(例:Dalvik)もしくはpid(プロセスID)を指定することで、見たいログのみ表示するタブが作られる。
+
+h3. コマンドラインでのLog確認方法
+* Eclipce以外からログを見るには、adbのlogcat(コマンドライン)がある。
+** 端末が接続されるまではWait状態、その後ログが流れる、、、はず。
+<pre>
+adb logcat
+</pre>
+
+* ちなみにこんな感じでオプション指定可能
+<pre>
+//ログをタグでフィルタ
+adb logcat -s [tag名]
+
+//ログに出力時間を含める
+adb logcat -v time
+
+//ログにスレッドIDも出力
+adb logcat -v long
+
+//ファイルに出力
+adb logcat > log.txt
+
+//radioログを取得
+adb logcat -b radio
+
+//ログレベルによるフィルタ（例はInfo以上のみ出力）
+adb logcat *:I
+
+//指定タグへのログレベルフィルタ（例はタグTestに対するフィルタ, 他タグは全出力）
+adb logcat Test:I
+
+//指定タグのみ出力する場合（Sはサイレント指定）
+adb logcat Test:V *:S
+
+//USBを抜いた後もログを取り続ける場合
+adb logcat > log.txt &
+</pre>
+
+h2. adbを使いこなす
+h3. 接続されているエミュレータ/デバイスを確認する
+<pre>
+# adb devices
+List of devices attached
+CB5A1K9K7P      device
+</pre>
+
+h3. エミュレータ/デバイスにAndroidアプリケーション(.apkファイル)をインストールする
+<pre>
+# adb install sample.apk
+</pre>
+
+h3. エミュレータ/デバイスにファイルをコピーする
+* 開発環境上からエミュレータ/デバイス上にファイルをコピーすることができる。
+* たとえば、開発環境上にあるsample.pngという画像をSDカード上にコピーしたいときは以下のようにする。
+<pre>
+# adb push sample.png /sdcard/
+</pre>
+* コマンド実行後、端末側のSDカードを確認するとsample.pngがアップロードされているはず。
+* 当然逆も可能。
+<pre>
+# adb pull /sdcard/sample.png /tmp
+</pre>
+
+h3. 複数の端末が接続されている場合の指定方法
+* 下記のオプションが使える模様。
+<pre>
+-d：USBで接続されている実機に対してコマンドを実行する
+-e：エミュレータに対してコマンドを実行する
+-s：指定したシリアル番号の端末に対してコマンドを実行する
+</pre>
+* たとえば、実機のSDカードにデータをコピーして、エミュレータにアプリケーションをインストールしたい場合はこんな感じ。
+<pre>
+// 実機のSDカードにsample.pngをコピー．
+# adb -d push sample.png /sdcard
+// エミュレータにapkをインストール.
+# adb -e install RockPlayer_0.2.8_Beta_v6_vfp.apk
+463 KB/s (2621291 bytes in 5.522s)
+    pkg: /data/local/tmp/RockPlayer_0.2.8_Beta_v6_vfp.apk
+Success
+</pre>
+
+h2. DDMSで効率的にデバッグする
+h3. DDMS(Dalvik Debug Monitor Server)
+* Androidのデバッギングツール。
+** 主な機能はこんな感じ。
+*** デバイスごと、デバッグ機能を提供
+*** エミュレータへの着信、電波状態、位置情報制御
+*** スレッドの状態確認
+*** Heap(メモリ)の使用量、使用統計情報
+*** メモリ・アロケーション(メモリ確保)のトラッキング
+*** ファイルエクスプローラ
+** 詳細はここを参考に。
+*** DDMSで効率的にデバッグする:http://techbooster.org/android/environment/1040/
+
+h2. Androidのライフサイクルとプラットフォーム
+h3. Androidの特徴はこれを見よう
+* ざっくり図をみたいときはここを参考に。
+** 図解Androidのライフサイクルとプラットフォーム:http://techbooster.org/android/environment/323/
+* Activityってなんぞやってときはここを参考に。
+** Activityとライフサイクル:http://techbooster.org/android/application/85/
+
+h2. 実装していて気になったこと
+h3. Contextってなんよ？
+* コンテキストを取得するのにはthisとgetApplicationContext()がある。
+** getBaseContext()ってのもあるけどGoogleさんが使うなって言ってた。
+
+* Contextとは？
+** まずコンテキストとは何ぞや？ってところから調べてみた。
+** googleのドキュメントから抜粋(google document:http://developer.android.com/intl/ja/reference/android/content/Context.html)
+<pre>
+Interface to global information about an application environment.
+This is an abstract class whose implementation is provided by the Android system.
+It allows access to application-specific resources and classes, as well as up-calls for application-level operations such as launching activities, broadcasting and receiving intents, etc.
+</pre>
+
+** 要約すると、
+<pre>
+アプリケーションの環境情報とかをグローバル(Android OSの全域）で受け渡しするためのインターフェース
+アクティビティの起動とかブロードキャスト、インテントの受け取りといった他のアプリからの応答を行え、アンドロイド特有のリソース・クラスにアクセスすることも出来る。
+アプリ全体の状態を持っていて、何から起動されたかどういう状態か、何にアクセスしようとしているか、といった情報を受け渡すために使っている。ということでいいのかも。
+</pre>
+
+* Application or Activity
+** なぜContextを渡すのかについては、アプリの状態を受け渡すため～みたいな認識で良いとして。。。
+** ContextにはActivity と Applicationって2つのContextがある。
+
+** ActivityのContextを取得するには、(Activityを継承してるクラスで)thisを呼ぶ。
+*** ApplicationのContextを取得するには、getApplicationContext()を呼ぶということで合ってるかな？
+
+** 2つのContextの違いは、Application Contextはアプリケーションに関連していて、アプリケーションのライフサイクルに関わらず同じContextオブジェクトとなっていること。
+** それに反して、Activity ContextはActivityに関連していて、Activityが破棄される時(画面が回転するなどといったときに簡単に破棄される）、Contextオブジェクトも同様に何度でも破棄されて何度でも作られる。ということだろうか。
+
+** では、どっちを使えば良いのか？ということだが。。。
+*** ここ(ACHCHの雑記:http://achch362.blog112.fc2.com/blog-entry-6.html)を参考にしたところ、情報として持っている物は、変わらないみたい。
+
+* メモリリーク？
+** ActivityのContext(つまり"this"ね)はActivityのライフサイクルに依存して破棄&生成されるのであれば静的変数に突っ込んで参照している場合ヘタするとメモリリークするのではないか。
+** つーことで取れるものが一緒ならリスクの無い（低い？）getApplicationContext()を使う方が良さそう。

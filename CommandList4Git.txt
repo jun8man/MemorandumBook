@@ -1,9 +1,18 @@
 ■Gitコマンド集
 
 git log [file name]
-  Commit履歴
+    Commit履歴
 git log -p [file name]
-  Commit履歴 + 変更箇所
+    Commit履歴 + 変更箇所
 git blame [file name]
-  ファイル内を1行ずつ誰が変更したかわかる
+    ファイル内を1行ずつ誰が変更したかわかる
+git branch
+    現在のbranch一覧表示
+git branch hogehoge
+    hogehogeというbranchを切る
+git branch -d hogehoge
+    hogehogeというbranchを削除する
+git diff HEAD~
+    １つ前のコミット内容と現在のdiffを表示する
+    ~が増えるとその分Indexを遡る
 
